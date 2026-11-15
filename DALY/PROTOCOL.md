@@ -1,7 +1,7 @@
 # Daly smart BMS — UART / RS485 protocol
 
 > Status: 🌐 Community. Built from [maland16/daly-bms-uart](https://github.com/maland16/daly-bms-uart) and
-> [dbus-serialbattery `bms/daly.py`](https://github.com/mr-manuel/venus-os_dbus-serialbattery). No captures in this repository yet.
+> [dbus-serialbattery `bms/daly.py`](https://github.com/mr-manuel/venus-os_dbus-serialbattery). No captures in this repository yet. For Bluetooth Low Energy (`0xD2`/`0x81`/`0xA5`) and Sinowealth variants, see [BLE.md](BLE.md).
 
 | | |
 |---|---|

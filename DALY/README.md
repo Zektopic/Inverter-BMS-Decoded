@@ -3,7 +3,7 @@
 Product: [Daly smart BMS 8S–16S, 24 V/48 V, 100 A energy-storage BMS](https://www.dalybms.com/daly-smart-bms-8s16s-24v48v-100a-energy-storage-battery-product/)
 (link from [`DAly.txt`](DAly.txt)).
 
-The UART/RS485 protocol is documented in [PROTOCOL.md](PROTOCOL.md).
+The UART/RS485 protocol is documented in [PROTOCOL.md](PROTOCOL.md). For Bluetooth Low Energy (`0000fff0`, `0xD2`/`0x81` Modbus-over-BLE, `0xA5` over BLE) and the Sinowealth variant, see [BLE.md](BLE.md).
 
 ## Image index (`images1/`)
 
