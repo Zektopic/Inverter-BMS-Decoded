@@ -102,7 +102,8 @@ temperature limits, cell count, charge/discharge/balance switches, design capaci
 | end | record number (4 bytes), `68` end marker, checksum (4 bytes; 16-bit sum of all previous bytes in the last two) |
 
 **Bluetooth**: frames `55 AA EB 90 <type> <counter> …`, type `01` settings, `02` cell info, `03` device info. Newer firmware
-(JK02_32S) uses the same layout as the JK-PB frames above.
+(JK02_32S) uses the same layout as the JK-PB frames above. See [BLE.md](BLE.md) for the full GATT UUIDs (`0000ffe0`/`0000ffe1`),
+20-byte `AA 55 90 EB` commands, and byte-offset tables for `JK02_24S` and `JK02_32S`.
 
 ---
 

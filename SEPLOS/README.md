@@ -10,7 +10,7 @@
 | Serial | 19200 baud, 8N1 |
 | Framing | YD/T 1363.3 ASCII: `~` … `\r`, hex-ASCII payload |
 | Pack address | 0–15, set by the DIP switch on the pack |
-| Not supported by this protocol | Seplos **V3** BMS ([see V3](V3.md)) (reported to answer Modbus RTU and ignore these frames; [HA community](https://community.home-assistant.io/t/seplos-bms-v3-mason-10e-all-16-cell-voltages-with-plain-modbus-yaml-no-custom-component-no-esp-no-mqtt/1017847)) |
+| Not supported by this protocol | Seplos **V3** BMS ([see V3](V3.md)) (reported to answer Modbus RTU and ignore these frames; [HA community](https://community.home-assistant.io/t/seplos-bms-v3-mason-10e-all-16-cell-voltages-with-plain-modbus-yaml-no-custom-component-no-esp-no-mqtt/1017847)). For Bluetooth (BLE) on V2 and V3, see [BLE.md](BLE.md). |
 
 ## Sources
 
