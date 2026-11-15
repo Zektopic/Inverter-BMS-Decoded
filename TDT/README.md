@@ -13,7 +13,7 @@
 
 ## Framing
 
-YD/T 1363 ASCII, the same framing as [Seplos V2](../SEPLOS/README.md#framing) and [Pylontech RS485](../PYLONTECH/README.md#rs485-protocol-v33):
+YD/T 1363 ASCII, the same framing as [Seplos V2](../SEPLOS/README.md#frame-format) and [Pylontech RS485](../PYLONTECH/README.md#rs485-protocol-v33):
 `~` VER ADR CID1 CID2 LENGTH INFO CHKSUM `CR`. In the captures VER = `0x20`, ADR = `0x12`, CID1 = `0x46`.
 
 ## Commands (CID2)
