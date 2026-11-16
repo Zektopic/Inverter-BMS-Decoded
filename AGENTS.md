@@ -8,6 +8,7 @@ This repository is a community reference for battery management system (BMS) and
 - `TEMPLATE.md` — Required structure for every new brand or protocol page.
 - `CONTRIBUTING.md` — Style, privacy (redact serial numbers / MACs / BLE passcodes), and safety rules.
 - `RELATED_PROJECTS.md` — Curated index of upstream open-source decoders and test-frame repositories (`patman15/aiobmsble`, `syssi/esphome-*`, `dbus-serialbattery`, `Battery-Emulator`, etc.).
+- `BLUETOOTH.md` — Cross-brand Bluetooth LE guide: GATT service / notify / write table for every BLE page, how to tell brands apart when they share a service, frame reassembly, and the read-only polling requests. Add or update a row in its GATT quick reference whenever a BLE page is added or its UUIDs change.
 - `<BRAND>/` — Uppercase brand folder (`README.md`, optional `<PROTOCOL>.md` or `BLE.md`, `PDFs/` for freely downloadable vendor docs, `captures/` for real device dumps).
 
 ## Non-Negotiable Rules for Agents
