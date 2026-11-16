@@ -68,8 +68,23 @@ Offsets below are for **JK02_32S** (firmware `V11.x+`). For **JK02_24S** (firmwa
 | `214` | `182` | 1 | u8 | bitmask | Temperature sensor presence mask |
 | `215` | `183` | 1 | u8 | bool | Heater active |
 | `236` | `204` | 2 | s16 | 1 mA | Heater current |
-| `254`, `256`, `258` | — | 3 × 2 | s16 | 0.1 °C | Extra temperatures (SW `>= 14`: MOS2, T4, T5) |
+| `254` | — | 2 | s16 | 0.1 °C | Second MOSFET temperature (SW `>= 11`) |
+| `256`, `258` | — | 2 × 2 | s16 | 0.1 °C | Extra battery temperatures (SW `>= 14`) |
 | `280` | — | 1 | u8 | enum | Battery mode (SW `>= 15`) |
+
+**Temperature sensors**: bit *n* of the presence mask (`214`, or `182` on `JK02_24S`) says whether sensor *n* is fitted, and
+a value of `-2000` also means absent. `aiobmsble` numbers the sensors as follows:
+
+| Mask bit | `JK02_32S` offset | `JK02_24S` offset |
+|---|---|---|
+| 0 | `144` (MOSFET) | `130` |
+| 1 | `162` | `132` |
+| 2 | `164` | `134` (MOSFET) |
+| 3 | `254` (MOSFET, SW `>= 11`) | — |
+| 4, 5 | `256`, `258` (SW `>= 14`) | — |
+
+On `JK02_24S` the `u32` at `134` therefore holds the MOSFET temperature in its low 16 bits and the alarm bits in its high
+16 bits, which is why the alarm row says `>> 16`.
 
 ---
 
@@ -83,6 +98,40 @@ Offsets below are for **JK02_32S** (firmware `V11.x+`). For **JK02_24S** (firmwa
 | `46` | 16 | ASCII | Device name |
 | `62` | 16 | ASCII | **Bluetooth passcode (never publish)** |
 | `86` | 8+ | ASCII | Serial number |
+
+The first character(s) of the software version decide the layout of the `0x02` frame: major version below 11 means
+`JK02_24S`, 11 or above means `JK02_32S`. Read this frame once after connecting, before decoding any live data.
+
+---
+
+## Connection sequence
+
+From [`aiobmsble` `jikong_bms.py`](https://github.com/patman15/aiobmsble/blob/main/aiobmsble/bms/jikong_bms.py):
+
+1. Find the characteristic `0xFFE1` and check its properties: the same characteristic is used for notify and for write
+   (write, or write without response). Subscribe to its notifications.
+2. Write the device-info command (`0x97`) and wait for a `0x03` frame. Take the software version from offset `30`.
+3. Wait for the BMS-ready message (`AA 55 90 EB C8 01 01 …`, shown above). On some firmware (seen on 19.05) it arrives appended to the
+   device-info frame instead of as its own notification.
+4. Write the cell-info command (`0x96`) and wait for a `0x02` frame. Once started, some boards keep sending `0x02` frames
+   on their own, so send `0x96` again only when no fresh frame has arrived.
+
+## Implementation notes
+
+- **Filter on the type byte.** After a command the BMS may send a frame of another type first (for example a `0x01`
+  settings frame before the `0x02` frame you asked for). Collect 300 bytes from `55 AA EB 90`, verify the checksum, and
+  only then look at byte `4`; drop frames of a type you did not ask for instead of treating them as errors.
+- **`AT\r\n` can appear at the start or at the end** of a notification. Strip it in both places before appending to the
+  frame buffer.
+- **Never decode a `JK02_24S` frame with `JK02_32S` offsets.** The checksum still passes and every value is simply wrong.
+  If you only implement one layout, check the software version and refuse the other.
+- **Redact the passcode before logging raw frames.** Bytes `62..77` of every `0x03` frame are the Bluetooth passcode. If
+  your logger or bus monitor shows raw notifications, zero those bytes first; remember that the frame usually arrives
+  split across several notifications, so the 16 bytes can straddle two of them.
+- **JK-PB inverter BMS over RS485** answers with the same 300-byte frames and the `JK02_32S` offsets
+  ([JK README](README.md#jk-pb-inverter-bms-rs485-modbus)), so one decoder can serve both links.
+- See the cross-brand [Bluetooth guide](../BLUETOOTH.md) for the generic connection steps and for telling a JK board apart
+  from the other brands that use service `0xFFE0`.
 
 ---
 

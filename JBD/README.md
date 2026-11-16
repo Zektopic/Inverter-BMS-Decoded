@@ -121,7 +121,7 @@ Response header: `DD 03 00 <len>`, followed by `<len>` data bytes (minimum `23 +
 | `0x10` (16) | 2 | `u16 BE` | bitmask | Protection / error status bits (see [Alarms and status bits](#alarms-and-status-bits)) |
 | `0x12` (18) | 1 | `u8` | BCD nibbles | Software version: `(byte >> 4) + (byte & 0x0F) × 0.1` (e.g. `0x10` = `1.0`, `0x80` = `8.0`) |
 | `0x13` (19) | 1 | `u8` | `1 %` | Remaining state of charge (`RSOC`, 0–100 %) |
-| `0x14` (20) | 1 | `u8` | bitmask | FET / operation status (see [FET and operation status byte](#fet-and-operation-status-byte-0x03-offset-0x14)) |
+| `0x14` (20) | 1 | `u8` | bitmask | FET / operation status (see [FET and operation status byte](#fet-and-operation-status-byte-0x03-data-offset-0x14-u8)) |
 | `0x15` (21) | 1 | `u8` | `1 cell` | Number of series cells (`cell_cnt`, 1–32) |
 | `0x16` (22) | 1 | `u8` | `1 sensor` | Number of NTC temperature sensors (`N`) |
 | `0x17` (23) | `2 × N` | `N × u16 BE` | `0.1 K` | NTC temperatures `1..N`: `°C = (raw − 2731) / 10` (e.g. `2981` = `25.0 °C`) |
@@ -383,7 +383,7 @@ DD A5 03 00 FF FD 77  ->  DD 03 00 1B 17 00 00 00 02 D0 03 E8 00 00 20 78 00 00 
 
 # 0x03 Basic info (17S pack discharging, p. 8): 66.23 V (0x19DF), -20.12 A (0xF824), 34.93 / 40.00 Ah,
 # 2 cycles, date 2018-04-17 (0x2491), SW v1.2 (0x12), SOC 87 % (0x57), FET 0x03, 17 cells,
-# 4 NTCs (24.7 °C, 26.4 °C, 24.5 °C, 24.6 °C)
+# 4 NTCs: 23.7 °C (0x0B98), 25.4 °C (0x0BA9), 23.5 °C (0x0B96), 23.6 °C (0x0B97)
 DD A5 03 00 FF FD 77  ->  DD 03 00 1F 19 DF F8 24 0D A5 0F A0 00 02 24 91 00 00 00 00 00 00 12 57 03 11 04 0B 98 0B A9 0B 96 0B 97 F8 9A 77
 ```
 
@@ -397,6 +397,7 @@ DD A5 03 00 FF FD 77  ->  DD 03 00 1F 19 DF F8 24 0D A5 0F A0 00 02 24 91 00 00 
 - **Typo in V4 PDF production date and cell voltage examples:** On page 2 of `Jiabaida.communication.protocol.pdf`, the production date bitmask example mixes `0x2068` and `0x2028` while the frame contains `0x2078` (2016-03-24). On page 7, cell 2 (`0x0EC8` = 3784 mV) is mislabelled `3744`.
 - **Typo in Overkill Solar `BLE _bluetooth_protocol.md`:** Lines 98 and 107–108 write `0x1000` instead of `0x10000` and compute `0x10000 - 0x03 = 0xffdd` (the actual checksum is `0xFFFD`, as correctly shown on line 52 of the same file).
 - **`0x05` payload layout in `JBD_REGISTER_MAP.md`:** Overkill Solar's `JBD_REGISTER_MAP.md` lists data offset `0x00` of register `0x05` as a 1-byte string length followed by the ASCII string. In fact, that length byte is byte 3 of the frame header (`DD 05 00 <len> <ASCII...> <crc> 77`); the data payload starting at frame byte 4 is purely the ASCII characters (unlike EEPROM string registers `0xA0`–`0xA2`, which do carry an extra length byte at data offset `0x00`).
+- **17S example temperatures (fixed 2026-11):** an earlier version of this page gave the four NTC values of the 17S vendor example as 24.7 / 26.4 / 24.5 / 24.6 °C. Recomputed from the raw words with `(raw − 2731) / 10` they are 23.7 / 25.4 / 23.5 / 23.6 °C (`0x0B98` = 2968 → 23.7 °C), consistent with the 4S and 15S examples on this page.
 - **Software version decoding (`0x12` in `0x03`):** The vendor documents and `esphome-jbd-bms` / `dbus-serialbattery` decode the version byte as two nibbles `(ver >> 4) + (ver & 0x0F) * 0.1` (`0x80` → `8.0`), whereas `jbdtool` divides the raw byte by 10 (`0x80` = 128 → `12.8`).
 
 ---
