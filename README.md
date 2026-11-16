@@ -8,7 +8,7 @@ frame formats, field tables, scaling, captured frames, and links to the original
 ![License](https://img.shields.io/badge/license-MIT-green)
 ![Contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen)
 
-[Protocol index](#protocol-index) · [How to read a page](#how-to-read-a-page) · [Related projects](RELATED_PROJECTS.md) · [Contributing](CONTRIBUTING.md) · [Template](TEMPLATE.md)
+[Protocol index](#protocol-index) · [Bluetooth guide](BLUETOOTH.md) · [How to read a page](#how-to-read-a-page) · [Related projects](RELATED_PROJECTS.md) · [Contributing](CONTRIBUTING.md) · [Template](TEMPLATE.md)
 
 </div>
 
@@ -58,6 +58,9 @@ page says that too.
 | **TDT** | TDT battery ("Force_L" / Pylon RS485 dialect) | RS485 | 9600 8N1 | YD/T1363 ASCII, CID2 0x60–0x64 | 🔬 Team decoded | [TDT](TDT/README.md) |
 | **SHINEGLE** | Motor controller → instrument cluster (not a BMS) | CAN | 250 kbit/s | 29-bit, J1939-style | 📄 Vendor doc | [SHINEGLE](SHINEGLE/README.md) |
 
+Reading a battery over Bluetooth? Start with the [cross-brand Bluetooth guide](BLUETOOTH.md): GATT services side by side,
+how to tell brands apart when they share a service, frame reassembly, and the read-only polling requests.
+
 ### Status legend
 
 | | Meaning |
@@ -104,7 +107,9 @@ See [RELATED_PROJECTS.md](RELATED_PROJECTS.md) for the full curated index of ope
 - [dalathegreat/Battery-Emulator](https://github.com/dalathegreat/Battery-Emulator): EV batteries as home storage, with many inverter protocols.
 - [ArminJo/JK-BMSToPylontechCAN](https://github.com/ArminJo/JK-BMSToPylontechCAN) and [NEEY-electronic/JK](https://github.com/NEEY-electronic/JK):
   included as submodules under [JK](JK/).
-- Vega Datalogger: ESP32-S3 firmware by the maintainer that reads several of these BMSs over RS485/CAN and publishes them over MQTT.
+- Vega Datalogger: ESP32-S3 firmware by the maintainer that reads several of these BMSs over RS485, CAN and Bluetooth LE and
+  publishes them over MQTT. Its Bluetooth decoders (JK, LiTime, Daly, JBD, Seplos V3) are tested against the captured frames
+  cited on those pages, not yet against real batteries.
 
 ## License
 
